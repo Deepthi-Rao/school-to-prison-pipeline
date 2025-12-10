@@ -1,1 +1,233 @@
 # Results
+
+```{r}
+library(readxl)
+library(dplyr)
+library(purrr)
+library(stringr)
+library(tidyr)
+library(ggplot2)
+
+## 0. Point this to the folder with all the CRDC_2020-21_XX.xlsx files
+# Better: don't use setwd() inside Rmd chunks; see note below.
+setwd("./data/")   # (ok for now, but see Section 3)
+
+# List all state files
+files <- list.files(pattern = "^CRDC_2020-21_[A-Z]{2}\\.xlsx$")
+
+# Helper: treat negative CRDC codes (-9, -11, etc.) as NA
+neg_to_na <- function(x) {
+  ifelse(x < 0, NA, x)
+}
+
+# Race codes and labels used in CRDC
+races <- c("HI","AM","AS","HP","BL","WH","TR")
+race_labels <- c(
+  HI = "Hispanic/Latino",
+  AM = "American Indian/Alaska Native",
+  AS = "Asian",
+  HP = "Native Hawaiian/Pacific Islander",
+  BL = "Black",
+  WH = "White",
+  TR = "Two or more races"
+)
+
+## 1. Read and stack all state files, adding STATE from filename
+read_state_file <- function(f) {
+  state_abbr <- str_match(f, "CRDC_2020-21_([A-Z]{2})\\.xlsx$")[, 2]
+
+  # Read everything as text so types are consistent across states
+  # suppressMessages() hides the huge "0 -> 0...731" name-repair message
+  dat <- suppressMessages(
+    read_xlsx(
+      f,
+      sheet = 1,
+      col_types = "text"   # every column is character
+    )
+  )
+
+  dat %>%
+    mutate(STATE = state_abbr)
+}
+
+# Now all columns have the same type in every file, so bind_rows() won't complain
+crdc_all <- map_dfr(files, read_state_file)
+
+```
+
+```{r}
+library(dplyr)
+library(ggplot2)
+
+# 1. Keep only states with > 0 incidents
+state_with_data <- state_race_plot %>%
+  group_by(STATE) %>%
+  filter(sum(corp_no_dis, na.rm = TRUE) > 0) %>%
+  ungroup()
+
+# 2. Choose races (up to 5) to show per state
+races_of_interest <- c("Hispanic/Latino", "Asian", "Black", "White")
+
+state_bar_data <- state_with_data %>%
+  filter(race_label %in% races_of_interest)
+
+# 3. Map abbreviations -> full state names
+state_lookup <- tibble(
+  STATE = state.abb,
+  state_name = state.name
+) %>%
+  add_row(STATE = "DC", state_name = "District of Columbia")  # add others if needed
+
+state_bar_data <- state_bar_data %>%
+  left_join(state_lookup, by = "STATE")
+
+# 4. Order states by *total* corporal punishment incidents (highest to lowest)
+state_order <- state_bar_data %>%
+  group_by(state_name) %>%
+  summarise(total_corp = sum(corp_no_dis, na.rm = TRUE), .groups = "drop") %>%
+  arrange(desc(total_corp)) %>%
+  pull(state_name)
+
+state_bar_data <- state_bar_data %>%
+  mutate(state_name = factor(state_name, levels = state_order))
+
+# 5. Vertical grouped bar chart, y = TOTAL incidents (not rate per 1000)
+ggplot(
+  state_bar_data,
+  aes(x = state_name, y = corp_no_dis, fill = race_label)
+) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  labs(
+    x = "State",
+    y = "Total corporal punishment incidents (no disabilities) 2020-21 school",
+    fill = "Race / ethnicity",
+    title = "Corporal punishment by race and state",
+    subtitle = "States with > 0 incidents; ordered by total incidents"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(
+    axis.text.x = element_text(angle = 60, hjust = 1)
+  )
+
+
+```
+```{r}
+library(dplyr)
+library(ggplot2)
+
+state_race_rates <- state_race %>%
+  mutate(
+    # punishments per 1,000 students in that state–race group
+    rate_per_1000 = if_else(enr > 0, corp_no_dis / enr * 1000, NA_real_),
+    # (optional) share of students punished (0–1)
+    pct_punished  = if_else(enr > 0, corp_no_dis / enr, NA_real_)
+  )
+
+# keep only states with any punishment
+races_of_interest <- c("Hispanic/Latino", "Asian", "Black", "White")
+
+state_bar_data <- state_race_rates %>%
+  filter(race_label %in% races_of_interest) %>%
+  group_by(STATE) %>%
+  filter(sum(corp_no_dis, na.rm = TRUE) > 0) %>%
+  ungroup()
+
+# lookup for full state names
+state_lookup <- tibble(
+  STATE = state.abb,
+  state_name = state.name
+) %>%
+  add_row(STATE = "DC", state_name = "District of Columbia")
+
+state_bar_data <- state_bar_data %>%
+  left_join(state_lookup, by = "STATE")
+
+# order states by overall rate per 1,000 (across the races you included)
+state_order <- state_bar_data %>%
+  group_by(state_name) %>%
+  summarise(
+    overall_rate = sum(corp_no_dis, na.rm = TRUE) /
+                   sum(enr,         na.rm = TRUE) * 1000,
+    .groups = "drop"
+  ) %>%
+  arrange(desc(overall_rate)) %>%
+  pull(state_name)
+
+state_bar_data <- state_bar_data %>%
+  mutate(state_name = factor(state_name, levels = state_order))
+
+# plot standardized rates
+ggplot(
+  state_bar_data,
+  aes(x = state_name, y = rate_per_1000, fill = race_label)
+) +
+  geom_col(position = position_dodge(width = 0.8)) +
+  labs(
+    x = "State (ordered by corporal punishment rate per 1,000 students)",
+    y = "Corporal punishment per 1,000 students (no disabilities)",
+    fill = "Race / ethnicity",
+    title = "Corporal punishment by race and state (standardized for population)",
+    subtitle = "Rates per 1,000 students, not raw incident counts"
+  ) +
+  theme_minimal(base_size = 11) +
+  theme(axis.text.x = element_text(angle = 60, hjust = 1))
+
+```
+```{r}
+library(dplyr)
+library(ggplot2)
+library(maps)      # for map_data("state")
+# install.packages("viridis") if you don't have it
+library(viridis)
+
+## 1. State-level total punishment rate (across races)
+state_rates <- state_race %>%
+  group_by(STATE) %>%
+  summarise(
+    corp_total    = sum(corp_no_dis, na.rm = TRUE),
+    enr_total     = sum(enr,         na.rm = TRUE),
+    rate_per_1000 = if_else(enr_total > 0,
+                            corp_total / enr_total * 1000,
+                            NA_real_),
+    .groups = "drop"
+  )
+
+## 2. Add full state name and "region" for joining to map_data
+state_lookup <- tibble(
+  STATE      = state.abb,
+  state_name = state.name
+) %>%
+  add_row(STATE = "DC", state_name = "District of Columbia")  # if needed
+
+state_rates <- state_rates %>%
+  left_join(state_lookup, by = "STATE") %>%
+  mutate(region = tolower(state_name))
+
+## 3. Get US state map polygons and join rates
+us_map <- map_data("state")  # has column 'region' in lowercase
+
+map_df <- us_map %>%
+  left_join(state_rates, by = "region")
+
+## 4. Choropleth map of punishment rate per 1,000 students
+ggplot(map_df, aes(long, lat, group = group, fill = rate_per_1000)) +
+  geom_polygon(color = "white", linewidth = 0.2) +
+  coord_fixed(1.3) +
+  scale_fill_viridis_c(
+    option  = "plasma",
+    na.value = "grey90",
+    name    = "Incidents per 1,000\n(no disabilities)"
+  ) +
+  labs(
+    title    = "Corporal punishment rates by state (CRDC 2020–21)",
+    subtitle = "Total corporal punishment incidents per 1,000 students without disabilities"
+  ) +
+  theme_void(base_size = 12) +
+  theme(
+    legend.position = "right",
+    plot.title      = element_text(hjust = 0.5, face = "bold"),
+    plot.subtitle   = element_text(hjust = 0.5)
+  )
+
+```
+

@@ -3,7 +3,7 @@ project:
   output-dir: docs
 
 execute:
-  echo: true
+  echo: false
   warning: false
   message: false
 
