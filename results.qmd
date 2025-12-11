@@ -1,4 +1,6 @@
 # Results
+
+In order to contextualize disciplinary rates across the country to spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The below is standardized in this way so that states would be directly comparable. A big state like Texas would have more disciplinary actions than a small state like Vermont, simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed.
 ```{r}
 # Install if needed:
 # install.packages(c("readxl", "dplyr", "ggplot2", "stringr", "purrr"))
@@ -276,24 +278,16 @@ ggplot(plot_df, aes(x = rate_per)) +
 ```
 
 
+The histogram above plots the distribution of these discipline rates by number of density of states that fall in this range. A density curve was overlaid on top to make the overall shape of the distribution clear. This distribution is clearly right skewed; most states cluster at a relatively low disciplinary rate, while a smaller number of states stretch out toward the higher rates on the right. This skewness means the mean is pulled upward by a handful of high-discipline states, and the average state is less punitive on average. It also gives a natural way to define and study outliers; states that sit far out in the long right tail well above where most of the density is concentrated are those with unusually high levels of disciplinary action relative to their student population.
+
 ```{r}
 library(dplyr)
 library(ggplot2)
 library(scales)
 
-# 1. Build state-level referral rate from state_race_rates
-state_ref <- state_race_rates %>%
-  group_by(state) %>%
-  summarise(
-    total_students = sum(total_students_race, na.rm = TRUE),
-    total_ref      = sum(total_ref_race,      na.rm = TRUE)
-  ) %>%
-  ungroup() %>%
-  mutate(ref_per = total_ref / total_students)
-
-# 2. Clean up + drop 0% states
-state_ref_long <- state_ref %>%
-  filter(total_students > 0, ref_per > 0) %>%   # remove 0% + empty states
+# state_data: state, total_students, total_actions, rate_per
+state_disc <- state_data %>%
+  filter(total_students > 0, !is.na(rate_per)) %>%
   mutate(
     state_full = case_when(
       state %in% state.abb ~ state.name[match(state, state.abb)],
@@ -302,27 +296,28 @@ state_ref_long <- state_ref %>%
       TRUE                 ~ state
     )
   )
-
-# 3. Cleveland dot plot
-ggplot(state_ref_long,
-       aes(x = reorder(state_full, ref_per),
-           y = ref_per)) +
-  # grey stem from 0 to the value
-  geom_segment(aes(xend = state_full, y = 0, yend = ref_per),
+# 2. Cleveland dot plot with purple → yellow color scale
+ggplot(state_disc,
+       aes(x = reorder(state_full, rate_per),
+           y = rate_per)) +
+  # stem from 0 to each point
+  geom_segment(aes(xend = state_full, y = 0, yend = rate_per),
                color = "grey80") +
-  # dot at the value, colored by rate
-  geom_point(aes(color = ref_per), size = 3) +
+  # dot, colored by discipline rate
+  geom_point(aes(color = rate_per), size = 3) +
   coord_flip() +
-  scale_y_continuous(labels = percent_format(accuracy = 0.01)) +
+  scale_y_continuous(
+    labels = percent_format(accuracy = 0.1),
+    name   = "Disciplinary Action Rate"
+  ) +
   scale_color_viridis_c(
-    option = "C",  # yellow ↔ purple
-    labels = percent_format(accuracy = 0.01),
-    name   = "Referral rate\n(per student)"
+    option = "C",  # purple → yellow
+    labels = percent_format(accuracy = 0.1),
+    name   = "Discipline Rate"
   ) +
   labs(
     x = "State",
-    y = "Referrals to law enforcement (per student)",
-    title = "Which states are most likely to refer students to law enforcement?"
+    title = "Which states enforce the most disciplinary measures?"
   ) +
   theme_minimal() +
   theme(
@@ -364,10 +359,10 @@ ggplot(map_df, aes(x = long, y = lat, group = group, fill = rate_per)) +
   scale_fill_viridis_c(
     option = "C",
     na.value = "grey90",
-    name = "Disciplinary actions\nper 1,000 students"
+    name = "Disciplinary Action Rate "
   ) +
   labs(
-    title = "Disciplinary Actions per 1,000 Students by State",
+    title = "Disciplinary Actions Rate by State",
     x = NULL,
     y = NULL
   ) +
