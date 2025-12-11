@@ -241,7 +241,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>https://civilrightsdata.ed.gov/view</p>
-<p>The data that I obtained was from the Civil Rights Data Collection owned and maintained by the U.S Department of Education. All public schools K-12, across the 50 states, including charter schools self-report this data. The file format for the 2020-2021 time frame was mainly available in .xlsx format. I focused my analysis on the school 2020–2021 year; the files were primarily available in .xlsx format, which I accessed via a publicly available API, downloading them separately for each U.S. state via a python script. For this project I used a subset of the columns that were available in this data set including TOT_ENR_M, TOT_ENR_F which represented total student counts faceted by gender. There was also more race-specific faceting represented by the RACE + M/F. I then used fields that represented disciplinary measures, SCH_DISCWODIS_* and SCH_DISCWDIS_*, for in school and out of school suspensions. For “pipeline” outcomes I pulled expulsion and alternative placement counts with columns that contained the patterns of EXP|EXPEL|ALT|ALTR and law-enforcement contact referrals and arrests with the patterns of REF and ARR, all of which are faceted by race and gender. These patterns and definitions come from the U.S. Dept. of Ed’s Civil Rights Data Collection codebooks</p>
+<p>The data that I obtained was from the Civil Rights Data Collection owned and maintained by the U.S Department of Education. All public schools K-12, across the 50 states, including charter schools self-report this data. The file format for the 2020-2021 time frame was mainly available in .xlsx format. I focused my analysis on the school 2020–2021 year; the files were primarily available in .xlsx format, which I accessed via a publicly available API, downloading them separately for each U.S. state via a python script.</p>
+<p>For this project I used a subset of the columns that were available in this data set including TOT_ENR_M, TOT_ENR_F which represented total student counts faceted by gender. There was also more race specific faceting represented by the ‘RACE’ and ‘M/F’. I then used fields that represented disciplinary measures, SCH_DISCWODIS_* and SCH_DISCWDIS_*, for in school and out of school suspensions. For “pipeline” outcomes I pulled expulsion and alternative placement counts with columns that contained the patterns of EXP|EXPEL|ALT|ALTR and law-enforcement contact referrals and arrests with the patterns of REF and ARR; all of which were also faceted by race and gender. These patterns and definitions come from the U.S. Dept. of Ed’s Civil Rights Data Collection codebooks.</p>
 <p>https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/federal-elections-2020/</p>
 <p>The data regarding election results for the 2020 election was obtained from the Federal Elections Commission website, an official website of the United States government.</p>
 <section id="missing-data" class="level1" data-number="3">
@@ -349,6 +350,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <p>This widespread absence of California’s data is evident in choropleth maps throughout the results sectionn. The state’s incomplete data highlights an important limitation of the CRDC dataset: even large states with major educational systems may provide inconsistent or incomplete reporting, which in turn affects nationwide comparisons. Texas is also missing quite a bit of data however which is notable.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># ID-like columns we don't treat as data fields</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>id_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"state"</span>, <span class="st">"source_file"</span>, <span class="st">"SCHID"</span>, <span class="st">"NCESSCH"</span>, <span class="st">"LEAID"</span>, <span class="st">"LEA_STATE"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>id_cols <span class="ot">&lt;-</span> <span class="fu">intersect</span>(id_cols, <span class="fu">names</span>(crdc_raw))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>data_cols <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="fu">names</span>(crdc_raw), id_cols)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># All enrollment columns (you can narrow this if you want)</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>enr_cols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">"ENR"</span>, <span class="fu">names</span>(crdc_raw), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>state_missing_enroll <span class="ot">&lt;-</span> crdc_raw <span class="sc">%&gt;%</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1) make enrollment numeric</span></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">all_of</span>(enr_cols), <span class="sc">~</span> <span class="fu">suppressWarnings</span>(<span class="fu">as.numeric</span>(.)))</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2) treat negative enrollment codes as missing</span></span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">all_of</span>(enr_cols), <span class="sc">~</span> <span class="fu">ifelse</span>(. <span class="sc">&lt;</span> <span class="dv">0</span>, <span class="cn">NA</span>, .))</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3) compute enrollment per school (row)</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">enrollment_row =</span> <span class="fu">rowSums</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(enr_cols)), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(state) <span class="sc">%&gt;%</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 4) sum enrollment + count NAs across data columns</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">total_enrollment =</span> <span class="fu">sum</span>(enrollment_row, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">missing_count    =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(<span class="fu">across</span>(<span class="fu">all_of</span>(data_cols)))),</span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    <span class="at">.groups =</span> <span class="st">"drop"</span></span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="co"># just in case some weird state has no enrollment at all</span></span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(total_enrollment <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>state_missing_enroll</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 50 × 3
+   state total_enrollment missing_count
+   &lt;chr&gt;            &lt;dbl&gt;         &lt;int&gt;
+ 1 AK              490579       1020268
+ 2 AL             2849395       2869138
+ 3 AR             2040355       2180517
+ 4 CO             3975478       3934986
+ 5 CT             2291741       2427903
+ 6 DC              406474        496695
+ 7 DE              598137        477807
+ 8 FL            12346106       8137955
+ 9 GA             7590879       4893978
+10 HI              550006        606409
+# ℹ 40 more rows</code></pre>
+</div>
+</div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(scales)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggrepel)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(state_missing_enroll,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> total_enrollment, <span class="at">y =</span> missing_count)) <span class="sc">+</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>, <span class="at">alpha =</span> <span class="fl">0.7</span>, <span class="at">color =</span> <span class="st">"steelblue"</span>) <span class="sc">+</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>, <span class="at">se =</span> <span class="cn">TRUE</span>, <span class="at">color =</span> <span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text_repel</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(<span class="at">label =</span> state),</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="dv">3</span>,</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">max.overlaps =</span> <span class="dv">5</span>,   <span class="co"># increase if labels still get dropped</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">box.padding =</span> <span class="fl">0.25</span>,</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">point.padding =</span> <span class="fl">0.2</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> comma) <span class="sc">+</span></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Relationship Between Total Enrollment and Missing Data by State"</span>,</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Total Enrollment (all schools combined)"</span>,</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Number of Missing Values"</span></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="data_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. Texas has the most enrollment and also the most missing data which seems expected.</p>
 
 
 </section>

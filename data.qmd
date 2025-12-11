@@ -125,7 +125,7 @@ ggplot(missing_by_state,
 
 ```
 
-This widespread absence of California's data is evident in choropleth maps throughout the results sectionn. The state’s incomplete data highlights an important limitation of the CRDC dataset: even large states with major educational systems may provide inconsistent or incomplete reporting, which in turn affects nationwide comparisons. Texas is also missing quite a bit of data however which is notable.
+This widespread absence of California's data is evident in choropleth maps throughout the results section. The state’s incomplete data highlights an important limitation of the CRDC dataset; inconsistent or incomplete reporting, which in turn affects nationwide comparisons. Texas is also missing quite a bit of data however which is notable.
 
 ```{r}
 library(dplyr)
