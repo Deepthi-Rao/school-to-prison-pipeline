@@ -8,7 +8,7 @@ execute:
   message: false
 
 book:
-  title: "School To Prison Pipeline"
+  title: "Political, Racial, and Geographical Trends in the School To Prison Pipeline"
   author:
     - Deepthi Rao dgr2116
   repo-url: https://github.com/Deepthi-Rao/school-to-prison-pipeline
