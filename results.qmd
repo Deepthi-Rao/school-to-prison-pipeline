@@ -327,7 +327,7 @@ ggplot(state_disc,
 
 ```
 
-We can observe this Cleveland Dot Plot the exact disciplinary rates by state. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as "10% of students in Arkansas have experienced a disciplinary measure" as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student.
+We can observe with this Cleveland Dot Plot the exact disciplinary rates by state. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as "10% of students in Arkansas have experienced a disciplinary measure" as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student.
 
 ```{r}
 library(dplyr)
@@ -568,7 +568,7 @@ ggplot(joined, aes(x = rate_per, y = margin_share)) +
 
 ```
 
-To further quantify this visual trend a scatter plot with a linear regression and corresponding confidence interval were fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. This correlation could indicate that partisan alignment could be associated with discipline rates.
+To further quantify this visual trend a scatter plot with a linear regression was fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. This correlation could indicate that partisan alignment could be associated with discipline rates.
 
 While this graph is not meant to imply that political ideology causes disciplinary rates to go up or down, it strongly suggests that there is a cultural or political environment that correlates partisan alignment with how frequently schools use disciplinary actions. This could include differences in state laws, funding levels, demographics, and other social factors. The scatterplot and the corresponding linear regression provide a compelling starting point to explore those trends more deeply. 
 
