@@ -1,0 +1,198 @@
+# Data
+```{r}
+library(readxl)
+library(dplyr)
+
+# 1. Read the Excel file into a *data frame*
+df <- read_excel("./data/2020-2021/CRDC_2020-21_AK.xlsx", sheet = 1)
+
+# 2. Filter to the relevant columns
+df_filtered <- df |>
+  select(
+    # ID/context columns if they exist
+    any_of(c("LEA_STATE", "LEAID", "SCH_ID", "SCH_NAME")),
+    
+    # total enrollment by gender
+    any_of(c("TOT_ENR_M", "TOT_ENR_F")),
+    
+    # race-specific enrollment: SCH_ENR_[RACE]_[M/F]
+    matches("^SCH_ENR_.*_[MF]$"),
+    
+    # discipline: in-school + out-of-school suspensions
+    matches("^SCH_(DISCWODIS|DISCWDIS)_"),
+    
+    # expulsion / alternative placements
+    matches("^SCH_(DISCWODIS|DISCWDIS)_(EXP|EXPEL|ALT|ALTR)_"),
+    
+    # law enforcement: referrals + arrests
+    matches("^SCH_(DISCWODIS|DISCWDIS)_(REF|ARR)_")
+  )
+
+```
+
+https://civilrightsdata.ed.gov/view
+
+The data that I obtained was from the Civil Rights Data Collection owned and maintained by the U.S Department of Education. All public schools K-12, across the 50 states, including charter schools self-report this data. The file format for the 2020-2021 time frame was mainly available in .xlsx format. I focused my analysis on the school 2020–2021 year; the files were primarily available in .xlsx format, which I accessed via a publicly available API, downloading them separately for each U.S. state via a python script.
+
+For this project I used a subset of the columns that were available in this data set including TOT_ENR_M, TOT_ENR_F which represented total student counts faceted by gender. There was also more race specific faceting represented by the 'RACE' and 'M/F'. I then used fields that represented disciplinary measures, SCH_DISCWODIS and SCH_DISCWDIS, for in school and out of school suspensions. For "pipeline” outcomes I pulled expulsion and alternative placement counts with columns that contained the patterns of EXP|EXPEL|ALT|ALTR and law enforcement contact referrals and arrests with the patterns of REF and ARR, all of which were also faceted by race and gender. These patterns and definitions come from the U.S. Dept. of Ed’s Civil Rights Data Collection codebooks.
+
+
+https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/federal-elections-2020/
+
+The data regarding election results for the 2020 election was obtained from the Federal Elections Commission website, an official website of the United States government. 
+
+
+# Missing Data
+
+
+```{r}
+library(readxl)
+library(dplyr)
+library(stringr)
+library(purrr)
+library(tidyr)
+
+data_dir <- "./data/2020-2021"
+
+files <- list.files(
+  data_dir,
+  pattern = "CRDC_2020-21_.*\\.xlsx$",
+  full.names = TRUE
+)
+
+read_state_file <- function(path) {
+  df    <- suppressMessages(read_excel(path, sheet = 1, col_types = "text"))
+  fname <- basename(path)
+  
+  # State from LEA_STATE or filename
+  state_code <- if ("LEA_STATE" %in% names(df)) {
+    df$LEA_STATE[1]
+  } else {
+    m <- str_match(fname, "CRDC_2020-21_([A-Z]{2})\\.xlsx")
+    if (!is.na(m[1, 2])) m[1, 2] else NA_character_
+  }
+  
+  df |>
+    mutate(
+      source_file = fname,
+      state       = state_code
+    )
+}
+
+crdc_raw <- map_dfr(files, read_state_file)
+
+
+
+```
+
+
+```{r}
+
+library(dplyr)
+library(stringr)
+library(ggplot2)
+library(viridis)   # for viridis color scale, optional
+
+# ID-like columns we do NOT want to treat as data fields
+id_cols <- c("state", "source_file", "SCHID", "NCESSCH", "LEAID", "LEA_STATE")
+id_cols <- intersect(id_cols, names(crdc_raw))
+
+# All data columns that may contain missing values
+data_cols <- setdiff(names(crdc_raw), id_cols)
+
+missing_by_state <- crdc_raw |>
+  group_by(state) |>
+  summarise(
+    missing_count = sum(is.na(across(all_of(data_cols)))),
+    total_cells   = sum(length(data_cols)),
+    .groups       = "drop"
+  ) |>
+  arrange(desc(missing_count))
+
+missing_by_state
+
+ggplot(missing_by_state,
+       aes(x = reorder(state, missing_count), y = missing_count)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(
+    title = "Missing Value Count per State in Raw CRDC Data",
+    x = "State",
+    y = "Number of Missing Values"
+  ) +
+  theme_minimal()
+
+
+```
+
+This bar graph shows where the gaps in the data are; we can see that California and Texas as missing some or all of the data. Missing data was often represented as negative numbers or blank strings in this dataset and was accounted for during the data analysis. In addition the widespread absence of California's data is evident in the choropleth maps throughout the results section. The states' incomplete data highlights an important limitation of the CRDC dataset that inconsistencies or incomplete reporting could affect nationwide comparisons.
+
+```{r}
+library(dplyr)
+
+
+# ID-like columns we don't treat as data fields
+id_cols <- c("state", "source_file", "SCHID", "NCESSCH", "LEAID", "LEA_STATE")
+id_cols <- intersect(id_cols, names(crdc_raw))
+
+data_cols <- setdiff(names(crdc_raw), id_cols)
+
+# All enrollment columns (you can narrow this if you want)
+enr_cols <- grep("ENR", names(crdc_raw), value = TRUE)
+
+state_missing_enroll <- crdc_raw %>%
+  # 1) make enrollment numeric
+  mutate(
+    across(all_of(enr_cols), ~ suppressWarnings(as.numeric(.)))
+  ) %>%
+  # 2) treat negative enrollment codes as missing
+  mutate(
+    across(all_of(enr_cols), ~ ifelse(. < 0, NA, .))
+  ) %>%
+  # 3) compute enrollment per school (row)
+  mutate(
+    enrollment_row = rowSums(across(all_of(enr_cols)), na.rm = TRUE)
+  ) %>%
+  group_by(state) %>%
+  # 4) sum enrollment + count NAs across data columns
+  summarise(
+    total_enrollment = sum(enrollment_row, na.rm = TRUE),
+    missing_count    = sum(is.na(across(all_of(data_cols)))),
+    .groups = "drop"
+  ) %>%
+  # just in case some weird state has no enrollment at all
+  filter(total_enrollment > 0)
+
+state_missing_enroll
+```
+
+
+```{r}
+library(ggplot2)
+library(scales)
+library(ggrepel)
+ggplot(state_missing_enroll,
+       aes(x = total_enrollment, y = missing_count)) +
+  geom_point(size = 3, alpha = 0.7, color = "steelblue") +
+  geom_smooth(method = "lm", se = TRUE, color = "black") +
+  geom_text_repel(
+    aes(label = state),
+    size = 3,
+    max.overlaps = 5,   # increase if labels still get dropped
+    box.padding = 0.25,
+    point.padding = 0.2
+  ) +
+  scale_x_continuous(labels = comma) +
+  scale_y_continuous(labels = comma) +
+  labs(
+    title = "Relationship Between Total Enrollment and Missing Data by State",
+    x = "Total Enrollment (all schools combined)",
+    y = "Number of Missing Values"
+  ) +
+  theme_minimal()
+```
+
+
+This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. This relationship feels logical, the more data associated with the state the more likely is it to have holes in the data. 
+
+
