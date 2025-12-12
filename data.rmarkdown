@@ -125,7 +125,7 @@ ggplot(missing_by_state,
 
 ```
 
-This widespread absence of California's data is evident in choropleth maps throughout the results section. The state’s incomplete data highlights an important limitation of the CRDC dataset; inconsistent or incomplete reporting, which in turn affects nationwide comparisons. Texas is also missing quite a bit of data however which is notable.
+This widespread absence of California's data is evident in choropleth maps throughout the results section. The state’s incomplete data highlights an important limitation of the CRDC dataset; inconsistent or incomplete reporting, which in turn affects nationwide comparisons.
 
 ```{r}
 library(dplyr)
@@ -191,6 +191,7 @@ ggplot(state_missing_enroll,
   ) +
   theme_minimal()
 ```
+
 
 This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. Texas has the most enrollment and also the most missing data which seems expected.
 

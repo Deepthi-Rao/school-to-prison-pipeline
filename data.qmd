@@ -192,5 +192,6 @@ ggplot(state_missing_enroll,
   theme_minimal()
 ```
 
+
 This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. Texas has the most enrollment and also the most missing data which seems expected.
 

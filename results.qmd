@@ -1,6 +1,6 @@
 # Results
 
-In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would help mitigate for a case like Texas which has more disciplinary actions than a small state like Vermont, simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.
+In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which has more disciplinary actions than a small state like Vermont, simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.
 ```{r}
 # Install if needed:
 # install.packages(c("readxl", "dplyr", "ggplot2", "stringr", "purrr"))
@@ -277,7 +277,7 @@ ggplot(plot_df, aes(x = rate_per)) +
 
 ```
 
-The histogram above plots the distribution of these discipline rates by density of states that fall in this range. This distribution of disciplinary rates is right skewed; most states cluster at a relatively low disciplinary rate, while a small number of states display higher rates. Understanding the distribution in this way gives a natural way to define and study outliers. States that sit in the right tail, well above where most of the density is concentrated, are those with unusually high levels of disciplinary action relative to their student population. Below we will explore which states which make up the outliers shown by this histogram. 
+The histogram above plots the distribution of these discipline rates by density of states that fall in this range. This distribution of disciplinary rates is right skewed; most states cluster at a relatively low disciplinary rate, while a small number of states display higher rates. Understanding the distribution in this way gives a natural way to define and study outliers. States that sit in the right tail, well above where most of the density is concentrated, are those with unusually high levels of disciplinary action relative to their student population. Below we will explore which states make up the outliers shown by this histogram. 
 
 ```{r}
 library(dplyr)
