@@ -392,7 +392,7 @@ ggplot(map_df, aes(x = long, y = lat, group = group, fill = rate_per)) +
 
 
 ```
-This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country and from this we can gather if these trends correlate with broader social or political leanings. 
+This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country. From this we can gather if these trends correlate with broader social or political leanings. 
 
 ```{r}
 # install.packages(c("readxl", "dplyr", "ggplot2", "viridis", "maps"))  # run once
