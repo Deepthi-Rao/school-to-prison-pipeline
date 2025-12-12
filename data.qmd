@@ -193,5 +193,5 @@ ggplot(state_missing_enroll,
 ```
 
 
-This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. This relationship feels logical, the more data associated with the state the more likey is it to have holes in the data. 
+This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. This relationship feels logical, the more data associated with the state the more likely is it to have holes in the data. 
 
