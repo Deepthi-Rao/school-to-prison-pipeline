@@ -242,7 +242,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>https://civilrightsdata.ed.gov/view</p>
 <p>The data that I obtained was from the Civil Rights Data Collection owned and maintained by the U.S Department of Education. All public schools K-12, across the 50 states, including charter schools self-report this data. The file format for the 2020-2021 time frame was mainly available in .xlsx format. I focused my analysis on the school 2020–2021 year; the files were primarily available in .xlsx format, which I accessed via a publicly available API, downloading them separately for each U.S. state via a python script.</p>
-<p>For this project I used a subset of the columns that were available in this data set including TOT_ENR_M, TOT_ENR_F which represented total student counts faceted by gender. There was also more race specific faceting represented by the ‘RACE’ and ‘M/F’. I then used fields that represented disciplinary measures, SCH_DISCWODIS_* and SCH_DISCWDIS_*, for in school and out of school suspensions. For “pipeline” outcomes I pulled expulsion and alternative placement counts with columns that contained the patterns of EXP|EXPEL|ALT|ALTR and law-enforcement contact referrals and arrests with the patterns of REF and ARR; all of which were also faceted by race and gender. These patterns and definitions come from the U.S. Dept. of Ed’s Civil Rights Data Collection codebooks.</p>
+<p>For this project I used a subset of the columns that were available in this data set including TOT_ENR_M, TOT_ENR_F which represented total student counts faceted by gender. There was also more race specific faceting represented by the ‘RACE’ and ‘M/F’. I then used fields that represented disciplinary measures, SCH_DISCWODIS and SCH_DISCWDIS, for in school and out of school suspensions. For “pipeline” outcomes I pulled expulsion and alternative placement counts with columns that contained the patterns of EXP|EXPEL|ALT|ALTR and law enforcement contact referrals and arrests with the patterns of REF and ARR, all of which were also faceted by race and gender. These patterns and definitions come from the U.S. Dept. of Ed’s Civil Rights Data Collection codebooks.</p>
 <p>https://www.fec.gov/introduction-campaign-finance/election-results-and-voting-information/federal-elections-2020/</p>
 <p>The data regarding election results for the 2020 election was obtained from the Federal Elections Commission website, an official website of the United States government.</p>
 <section id="missing-data" class="level1" data-number="3">
@@ -441,7 +441,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. This relationship feels logical, the more data associated with the state the more likey is it to have holes in the data.</p>
+<p>This figure shows a clear positive relationship between a state’s total student enrollment and the number of missing values in its raw CRDC file. States with more students also tend to have more missing entries. This relationship feels logical, the more data associated with the state the more likely is it to have holes in the data.</p>
 
 
 </section>

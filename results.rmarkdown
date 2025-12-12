@@ -568,7 +568,7 @@ ggplot(joined, aes(x = rate_per, y = margin_share)) +
 
 ```
 
-To further quantify this visual trend a scatter plot with a linear regression and corresponding confidence interval were fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. This correlation could indicate that partisan alignment could be associated with discipline rates.
+To further quantify this visual trend a scatter plot with a linear regression was fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. This correlation could indicate that partisan alignment could be associated with discipline rates.
 
 While this graph is not meant to imply that political ideology causes disciplinary rates to go up or down, it strongly suggests that there is a cultural or political environment that correlates partisan alignment with how frequently schools use disciplinary actions. This could include differences in state laws, funding levels, demographics, and other social factors. The scatterplot and the corresponding linear regression provide a compelling starting point to explore those trends more deeply. 
 
@@ -940,7 +940,7 @@ ggplot(joined, aes(x = ref_per, y = margin_share)) +
   theme_minimal()
 ```
 
-Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While this graph indicates some correlation the pattern is much noisier than in the earlier disciplinary-rate plot. The overall picture could suggest that political orientation still relates to law enforcement referral practices, but the association is weaker than for general disciplinary actions.
+Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While this graph indicates some correlation the pattern is much noisier than in the earlier disciplinary rate plot. The overall picture could suggest that political orientation still relates to law enforcement referral practices, but the association is weaker than for general disciplinary actions.
 
 
 ```{r}
