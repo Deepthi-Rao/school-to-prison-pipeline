@@ -1,6 +1,7 @@
 # Results
 
 In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which have more disciplinary actions than smaller states simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.
+
 ```{r}
 # Install if needed:
 # install.packages(c("readxl", "dplyr", "ggplot2", "stringr", "purrr"))
@@ -567,7 +568,7 @@ ggplot(joined, aes(x = rate_per, y = margin_share)) +
 
 ```
 
-To further quantify this visual trend a scatter plot with a linear regression and corresponding confidence interval were fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. An r value of -.71 indicates a strong correlation indicating that partisan alignment could be associated with discipline rates. 
+To further quantify this visual trend a scatter plot with a linear regression and corresponding confidence interval were fitted. The plot reveals a strong correlation between a states' disciplinary action rate and its political leanings. This correlation could indicate that partisan alignment could be associated with discipline rates.
 
 While this graph is not meant to imply that political ideology causes disciplinary rates to go up or down, it strongly suggests that there is a cultural or political environment that correlates partisan alignment with how frequently schools use disciplinary actions. This could include differences in state laws, funding levels, demographics, and other social factors. The scatterplot and the corresponding linear regression provide a compelling starting point to explore those trends more deeply. 
 
@@ -939,7 +940,7 @@ ggplot(joined, aes(x = ref_per, y = margin_share)) +
   theme_minimal()
 ```
 
-Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While this graph indicates some correlation the pattern is much noisier than in the earlier disciplinary-rate plot. The overall picture could suggest that political orientation still relates to law-enforcement referral practices, but the association is weaker than for general disciplinary actions.
+Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While this graph indicates some correlation the pattern is much noisier than in the earlier disciplinary-rate plot. The overall picture could suggest that political orientation still relates to law enforcement referral practices, but the association is weaker than for general disciplinary actions.
 
 
 ```{r}
@@ -1002,6 +1003,13 @@ ggplot(
 These faceted maps show that referrals to law enforcement are far less uniformly distributed across racial groups than overall disciplinary actions. Most states maintain very low referral rates across all populations. However, a small cluster of states in the midwest, consistently display much higher referral rates for multiple racial groups. This pattern is especially pronounced for Black students. South Dakota in particular stands out with referral rates exceeding 1% far above the national baseline.
 
 
+# Non Technical Summary
+
+Looking across the country, the data was converted from raw discipline counts into rates per student so that big and small states could be fairly compared. Most states cluster at relatively low levels of suspensions, expulsions, and other punishments, but a smaller group of states especially in the South, like Arkansas, Mississippi, South Carolina, Louisiana, and Alabama use formal discipline much more often. 
+
+When the discipline map is placed next to the 2020 election map, a strong pattern emerges. States that vote more conservatively are also the ones that use school discipline more aggressively. In contrast, many liberal leaning states have lower discipline rates. This does not prove that political leanings directly affect discipline rates, but it suggests that broader political and cultural attitudes about punishment.
+
+The racial breakdown deepens this picture. Native American, Black, and multiracial students are disciplined at notably higher rates than their peers in many states. Places like Arkansas stand out as especially harsh across almost every racial group. When we look specifically at referrals to law enforcement and school based arrests which are entry points to the juvenile justice system most states use them rarely. But a few such as South Dakota and Wyoming rely on them much more and in seemingly racially disproportionate ways. Together, these findings help show some of the trends that define and perpetuate the school to prison pipeline.
 
 
 
