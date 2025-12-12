@@ -202,7 +202,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which has more disciplinary actions than a small state like Vermont, simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.</p>
+<p>In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which have more disciplinary actions than smaller states simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -546,7 +546,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>We can observe this Cleveland Cot Plot was created to further understand the exact states and their corresponding disciplinary rates. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as “10% of students in Arkansas have experienced a disciplinary measure” as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student. It also appears states cluster around the 2–5% disciplinary action rate, this is supported by the histogram above.</p>
+<p>We can observe this Cleveland Dot Plot the exact disciplinary rates by state. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as “10% of students in Arkansas have experienced a disciplinary measure” as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student. It also appears that states cluster around the 2–5% rate, and anything outside these ranges could be notable.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -618,7 +618,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country. From this we can gather if these trends correlate with broader social or political leanings.</p>
+<p>This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country and from this we can gather if these trends correlate with broader social or political leanings.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -734,7 +734,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>When the disciplinary action rate map for 2020-2021 and the results of the 2020 presindential election are juxtaposed, a clear visual pattern emerges. It appears that states that lean more conservatively, shown in deeper red, tend to correspond with states that exhibit higher disciplinary action rates. In contrast many states that voted more liberally, shown in blue, align with lower disciplinary rates. Although this correlation cannot establish causality, the geographic overlap between political leanings and disciplinary action rates is striking.</p>
+<p>When the disciplinary action rate map for 2020-2021 and the results of the 2020 presidential election are juxtaposed, a clear visual pattern emerges. It appears that states that lean more conservatively, shown in deeper red, tend to correspond with states that exhibit higher disciplinary action rates. In contrast many states that voted more liberally, shown in blue, align with lower disciplinary rates. Although this correlation cannot establish causality, the geographic overlap between political leanings and disciplinary action rates is visually striking.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -796,7 +796,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"2020-2021 Disciplinary Action Rate vs 2020 Political Landscape"</span>,</span>
-<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Disciplinary action rate (actions per student)"</span>,</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Disciplinary Action Rate (actions per student)"</span>,</span>
 <span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Vote Share (Republican/Democrat)"</span></span>
 <span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -875,8 +875,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Diving deeper into studying what racial biases could exist in rate of disciplinary measures given, a choropleth graph depicting the disciplinary rates faceted by race was created. We can see a clear trend emerge that American Indian (Native American), Alaska Native, Black and Multiracial students experience notably higher rates of disciplinary measures.</p>
-<p>Arkansas stands out as one of the states with consistently high disciplinary action rates, regardless of which race. On the faceted maps, Arkansas is repeatedly shaded in the upper end of the scale, indicating that students in the state experience disciplinary actions at disproportionately high levels compared with much of the country.</p>
+<p>Diving deeper into studying what racial biases could exist in rates of disciplinary measures given, a choropleth graph depicting the disciplinary rates faceted by race was created. We can see a clear trend emerge that American Indian (Native American), Alaska Native, Black and Multiracial students experience notably higher rates of disciplinary measures across the country.</p>
+<p>Arkansas stands out as one of the states with consistently high disciplinary action rates, regardless of which race. On the faceted maps, Arkansas is repeatedly shaded in the upper end of the scale, indicating that students in the state experience disciplinary actions at disproportionately high levels compared with much of the country. South Dakota and Nebraska also appear to disproportionately discipline black students at a higher rate compared to the rest of the country.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1058,8 +1058,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb12-49"><a href="#cb12-49" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb12-50"><a href="#cb12-50" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb12-51"><a href="#cb12-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"State"</span>,</span>
-<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Referrals to law enforcement (per student)"</span>,</span>
-<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Which states are most likely to refer students to law enforcement </span><span class="sc">\n</span><span class="st">for the 2020-2021 school year?"</span></span>
+<span id="cb12-52"><a href="#cb12-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Percent referral to law enforcement"</span>,</span>
+<span id="cb12-53"><a href="#cb12-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"States referral rate to law enforcement </span><span class="sc">\n</span><span class="st">for the 2020-2021 school year?"</span></span>
 <span id="cb12-54"><a href="#cb12-54" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="cb12-55"><a href="#cb12-55" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
 <span id="cb12-56"><a href="#cb12-56" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
@@ -1074,7 +1074,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
-<p>Taking a closer look at rates of referral to law enforcement reveal interesting trends, a subset of the total disciplinary measures, most states maintain a relatively low rate of referrals to law enforcement. There are some outlier states such as South Dakota and Wyoming. Interestingly these two states do not have the highest rates of disciplinary measures. But of the actions taken a higher percentage result in referral to law enforcement. This pattern potentially suggests that referrals to law enforcement are not evenly distributed across the country nor are they correlated to volume disciplinary measures overall.</p>
+<p>Taking a closer look at rates of referral to law enforcement reveal interesting trends, a subset of the total disciplinary measures, most states maintain a relatively low rate of referrals to law enforcement. There are some outlier states such as South Dakota and Wyoming. Interestingly these two states do not have the highest rates of disciplinary measures. But of the actions taken a higher percentage result in referral to law enforcement. This pattern potentially suggests that referrals to law enforcement are not evenly distributed across the country nor are they correlated to volume disciplinary measures overall. In addtion it is worth noting that not only does South Dakota appear in the previous faceted graphs for having high rates of enforcing disciplinary action on black students, but also high overall rates of referrals to law enforcement.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>

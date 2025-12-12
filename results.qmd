@@ -1,6 +1,6 @@
 # Results
 
-In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which has more disciplinary actions than a small state like Vermont, simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.
+In order to contextualize standard disciplinary rates across the country and spot outlier states, the data was converted from raw discipline counts into an overall proportion: total disciplinary actions divided by total enrollment. The analysis below is standardized in this way so that states would be directly comparable. For example this would account for states like Texas which have more disciplinary actions than smaller states simply because it has more students. If the data was not standardized in this way the overall interpretation would have been heavily skewed or be an inaccurate representation.
 ```{r}
 # Install if needed:
 # install.packages(c("readxl", "dplyr", "ggplot2", "stringr", "purrr"))
@@ -326,7 +326,7 @@ ggplot(state_disc,
 
 ```
 
-We can observe this Cleveland Cot Plot was created to further understand the exact states and their corresponding disciplinary rates. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as "10% of students in Arkansas have experienced a disciplinary measure" as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student. It also appears states cluster around the 2–5% disciplinary action rate, this is supported by the histogram above.
+We can observe this Cleveland Dot Plot the exact disciplinary rates by state. From the plot we can see that there are clear outliers among the states. Arkansas, Mississippi, South Carolina, Louisana and Alabama all have the highest incidences of disciplinary actions. In contrast Hawaii, Puerto Rico, the District of Columbia, and Maryland have rates close to zero, indicating that formal disciplinary actions are relatively rare in those states. These rates cannot be directly interpreted as "10% of students in Arkansas have experienced a disciplinary measure" as the data reflects total actions per category which could reflect multiple disciplinary actions for a single student.
 
 ```{r}
 library(dplyr)
@@ -391,7 +391,7 @@ ggplot(map_df, aes(x = long, y = lat, group = group, fill = rate_per)) +
 
 
 ```
-This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country. From this we can gather if these trends correlate with broader social or political leanings. 
+This choropleth map helps to bridge the gap between understanding geographical patterns and enforcement of disciplinary actions. This helps to understand how student experiences vary across states and regions. It appears that Midwestern states have higher rates of disciplinary measures overall compared to other parts of the country. Mapping these data in this way can show how rates cluster in parts of the country and from this we can gather if these trends correlate with broader social or political leanings. 
 
 ```{r}
 # install.packages(c("readxl", "dplyr", "ggplot2", "viridis", "maps"))  # run once
@@ -499,7 +499,7 @@ ggplot(
   )
 
 ```
-When the disciplinary action rate map for 2020-2021 and the results of the 2020 presindential election are juxtaposed, a clear visual pattern emerges. It appears that states that lean more conservatively, shown in deeper red, tend to correspond with states that exhibit higher disciplinary action rates. In contrast many states that voted more liberally, shown in blue, align with lower disciplinary rates. Although this correlation cannot establish causality, the geographic overlap between political leanings and disciplinary action rates is striking.  
+When the disciplinary action rate map for 2020-2021 and the results of the 2020 presidential election are juxtaposed, a clear visual pattern emerges. It appears that states that lean more conservatively, shown in deeper red, tend to correspond with states that exhibit higher disciplinary action rates. In contrast many states that voted more liberally, shown in blue, align with lower disciplinary rates. Although this correlation cannot establish causality, the geographic overlap between political leanings and disciplinary action rates is visually striking.  
 
 ```{r}
 joined <- state_data |>
@@ -560,7 +560,7 @@ ggplot(joined, aes(x = rate_per, y = margin_share)) +
   ) +
   labs(
     title = "2020-2021 Disciplinary Action Rate vs 2020 Political Landscape",
-    x = "Disciplinary action rate (actions per student)",
+    x = "Disciplinary Action Rate (actions per student)",
     y = "Vote Share (Republican/Democrat)"
   ) +
   theme_minimal()
@@ -626,9 +626,9 @@ ggplot(
   )
 
 ```
-Diving deeper into studying what racial biases could exist in rate of disciplinary measures given, a choropleth graph depicting the disciplinary rates faceted by race was created. We can see a clear trend emerge that American Indian (Native American), Alaska Native, Black and Multiracial students experience notably higher rates of disciplinary measures. 
+Diving deeper into studying what racial biases could exist in rates of disciplinary measures given, a choropleth graph depicting the disciplinary rates faceted by race was created. We can see a clear trend emerge that American Indian (Native American), Alaska Native, Black and Multiracial students experience notably higher rates of disciplinary measures across the country. 
 
-Arkansas stands out as one of the states with consistently high disciplinary action rates, regardless of which race. On the faceted maps, Arkansas is repeatedly shaded in the upper end of the scale, indicating that students in the state experience disciplinary actions at disproportionately high levels compared with much of the country.
+Arkansas stands out as one of the states with consistently high disciplinary action rates, regardless of which race. On the faceted maps, Arkansas is repeatedly shaded in the upper end of the scale, indicating that students in the state experience disciplinary actions at disproportionately high levels compared with much of the country. South Dakota and Nebraska also appear to disproportionately discipline black students at a higher rate compared to the rest of the country. 
 
 ```{r}
 
@@ -808,8 +808,8 @@ ggplot(state_ref_long,
   ) +
   labs(
     x = "State",
-    y = "Referrals to law enforcement (per student)",
-    title = "Which states are most likely to refer students to law enforcement \nfor the 2020-2021 school year?"
+    y = "Percent referral to law enforcement",
+    title = "States referral rate to law enforcement \nfor the 2020-2021 school year?"
   ) +
   theme_minimal() +
   theme(
@@ -818,7 +818,7 @@ ggplot(state_ref_long,
 
 ```
 
-Taking a closer look at rates of referral to law enforcement reveal interesting trends, a subset of the total disciplinary measures, most states maintain a relatively low rate of referrals to law enforcement. There are some outlier states such as South Dakota and Wyoming. Interestingly these two states do not have the highest rates of disciplinary measures. But of the actions taken a higher percentage result in referral to law enforcement. This pattern potentially suggests that referrals to law enforcement are not evenly distributed across the country nor are they correlated to volume disciplinary measures overall.
+Taking a closer look at rates of referral to law enforcement reveal interesting trends, a subset of the total disciplinary measures, most states maintain a relatively low rate of referrals to law enforcement. There are some outlier states such as South Dakota and Wyoming. Interestingly these two states do not have the highest rates of disciplinary measures. But of the actions taken a higher percentage result in referral to law enforcement. This pattern potentially suggests that referrals to law enforcement are not evenly distributed across the country nor are they correlated to volume disciplinary measures overall. In addtion it is worth noting that not only does South Dakota appear in the previous faceted graphs for having high rates of enforcing disciplinary action on black students, but also high overall rates of referrals to law enforcement. 
 
 ```{r}
 
@@ -872,7 +872,7 @@ ggplot(map_df,
   )
 
 ```
-Visually, the map showing referral rates to law enforcement does not reveal the same distinct regional patterns observed in the overall disciplinary rate. However, there is still some visual evidence that states with higher levels of disciplinary action also tend to have higher rates of referrals to law enforcement.
+Visually, the map showing referral rates to law enforcement does not reveal the same distinct regional patterns observed in the overall disciplinary rate choropleth map. However, there is still some visual evidence that states with higher levels of disciplinary action also tend to have higher rates of referrals to law enforcement.
 
 ```{r}
 joined <- state_ref_map |>
@@ -939,7 +939,7 @@ ggplot(joined, aes(x = ref_per, y = margin_share)) +
   theme_minimal()
 ```
 
-Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While graph indicated some correlation indicating that higher referral rates tend to occur in more Republican-leaning states the pattern is much noisier than in the earlier disciplinary-rate plot. The overall picture could suggest that political orientation still relates to law-enforcement referral practices, but the association is weaker than for general disciplinary actions.
+Bringing it back to political trends, this scatter plot shows correlation between referral to law enforcement rates and its relationship to political leanings. The graph indicates a moderate correlation between a state’s rate of referrals to law enforcement and its 2020 presidential vote margin. While this graph indicates some correlation the pattern is much noisier than in the earlier disciplinary-rate plot. The overall picture could suggest that political orientation still relates to law-enforcement referral practices, but the association is weaker than for general disciplinary actions.
 
 
 ```{r}
@@ -999,5 +999,11 @@ ggplot(
 
 ```
 
-These faceted maps show that referrals to law enforcement are far less uniformly distributed across racial groups than overall disciplinary actions. Most states maintain very low referral rates across all populations. However, a small cluster of states in the midwest, consistently display much higher referral rates for multiple racial groups. This pattern is especially pronounced for Black students. South Dakota in particular stands out with referral rates exceeding 1% far above the national baseline.The maps also reveal that the racial disparities visible in broader disciplinary measures tend to show weaker correlations in the context of law enforcement referrals.
+These faceted maps show that referrals to law enforcement are far less uniformly distributed across racial groups than overall disciplinary actions. Most states maintain very low referral rates across all populations. However, a small cluster of states in the midwest, consistently display much higher referral rates for multiple racial groups. This pattern is especially pronounced for Black students. South Dakota in particular stands out with referral rates exceeding 1% far above the national baseline.
+
+
+
+
+
+
 
